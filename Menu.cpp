@@ -6,6 +6,32 @@
 
 namespace rg {
 
+	void ClickableMenu::display() {
+		sf::Event e;
+		while (window->pollEvent(e))
+			switch (e.type) {
+			case sf::Event::Closed:
+				window->close();
+				return;
+			case sf::Event::KeyPressed:
+				switch (e.key.code) {
+				case sf::Keyboard::Up:
+					if (--m_text_index < 0)
+						m_text_index = m_clickable_texts.size() - 1;
+					break;
+				case sf::Keyboard::Down:
+					if (++m_text_index > m_clickable_texts.size() - 1)
+						m_text_index = 0;
+					break;
+				case sf::Keyboard::Enter:
+					EnterPressed();
+					break;
+				}
+				break;
+			}
+		m_renderManager->Render();
+	}
+
 #pragma region MainMenu
 
 	MainMenu::MainMenu(sf::RenderWindow& window, renderManager& render) {
@@ -34,44 +60,12 @@ namespace rg {
 		m_text_index = 0;
 
 		m_renderManager->addGraphics(new Image(ImageBuilder("snake.png", 300, 200, 0.85f, 0.85f)));
-		
-		//display();
-	}
-
-	void MainMenu::display() {
-		sf::Event e;
-		/*sf::Clock clock;
-		float time_step = 0.1f;*/
-		//while (window->isOpen() && Core::getNowMode() == Mode::MAIN_MENU) {
-			while(window->pollEvent(e))
-				switch (e.type) {
-				case sf::Event::Closed:
-					window->close();
-					return;
-				case sf::Event::KeyPressed:
-					switch (e.key.code) {
-					case sf::Keyboard::Up:
-						if (--m_text_index < 0)
-							m_text_index = m_clickable_texts.size() - 1;
-						break;
-					case sf::Keyboard::Down:
-						if (++m_text_index > m_clickable_texts.size() - 1)
-							m_text_index = 0;
-						break;
-					case sf::Keyboard::Enter:
-						EnterPressed();
-						break;
-					}
-					break;
-				}
-			m_renderManager->Render();
-		//}
 	}
 
 	void MainMenu::EnterPressed() {
 		switch (m_text_index) {
 		case 0:
-			Core::changeState(Mode::GAMING);
+			Global::C_changeCMode(CMode::GAMING);
 			break;
 		case 2:
 			window->close();
@@ -105,44 +99,12 @@ namespace rg {
 		for (Text* t : m_clickable_texts)
 			m_renderManager->addGraphics(t);
 		m_text_index = 0;
-
-		//display();
-	}
-
-	void GameOverMenu::display() {
-		sf::Event e;
-		/*sf::Clock clock;
-		float time_step = 0.1f;*/
-		//while (window->isOpen() && Core::getNowMode() == Mode::GAMEOVER) {
-			while (window->pollEvent(e))
-				switch (e.type) {
-				case sf::Event::Closed:
-					window->close();
-					return;
-				case sf::Event::KeyPressed:
-					switch (e.key.code) {
-					case sf::Keyboard::Up:
-						if (--m_text_index < 0)
-							m_text_index = m_clickable_texts.size() - 1;
-						break;
-					case sf::Keyboard::Down:
-						if (++m_text_index > m_clickable_texts.size() - 1)
-							m_text_index = 0;
-						break;
-					case sf::Keyboard::Enter:
-						EnterPressed();
-						break;
-					}
-					break;
-				}
-			m_renderManager->Render();
-		//}
 	}
 
 	void GameOverMenu::EnterPressed() {
 		switch (m_text_index) {
 		case 0:
-			Core::changeState(Mode::MAIN_MENU);
+			Global::C_changeCMode(CMode::MAIN_MENU);
 			break;
 		case 1:
 			window->close();

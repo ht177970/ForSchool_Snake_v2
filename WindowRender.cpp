@@ -35,9 +35,4 @@ namespace rg {
 				grap->draw(*window);
 		window->display();
 	}
-
-	bool renderManager::startGame() {
-		this->Render();
-		return m_snake->wait_start(*window);
-	}
 }

@@ -37,7 +37,6 @@ namespace rg {
 		bool detectWayKeys();
 		bool posInBody(int x, int y) { return posInBody({ x,y }); }
 		bool posInBody(Pos position);
-		bool wait_start(sf::RenderWindow& window);
 		bool gameover_delete_tail();
 	private:
 		int x, y;

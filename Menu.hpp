@@ -2,16 +2,12 @@
 #define SNAKE_RG_MENU_H_
 
 #include "WindowRender.hpp"
+#include "Global.hpp"
 #include <sstream>
 #include <vector>
 #include <SFML/System/String.hpp>
 
 namespace rg {
-	/*enum class Text_ID {
-		None = -1,
-		START_GAME = 0,
-		SETTINGS = 1
-	};*/
 	struct ImageBuilder {
 		std::string p_location;
 		float x;
@@ -50,32 +46,31 @@ namespace rg {
 		sf::Sprite sprite;
 	};
 
-	class MainMenu {
+	class ClickableMenu {
+	public:
+		void display();
+	protected:
+		int m_text_index;
+		sf::RenderWindow* window;
+		renderManager* m_renderManager;
+		std::vector<Text*> m_clickable_texts;
+		virtual void EnterPressed() = 0;
+	};
+
+	class MainMenu : public ClickableMenu {
 	public:
 		explicit MainMenu(sf::RenderWindow& window, renderManager& render);
 		~MainMenu() = default;
 		void initMenu();
-		void display();
 		void EnterPressed();
-	private:
-		int m_text_index;
-		sf::RenderWindow* window;
-		renderManager* m_renderManager;
-		std::vector<Text*> m_clickable_texts;
 	};
 
-	class GameOverMenu {
+	class GameOverMenu : public ClickableMenu {
 	public:
 		explicit GameOverMenu(sf::RenderWindow& window, renderManager& render);
 		~GameOverMenu() = default;
 		void initMenu(int score, int highest_score);
-		void display();
 		void EnterPressed();
-	private:
-		int m_text_index;
-		sf::RenderWindow* window;
-		renderManager* m_renderManager;
-		std::vector<Text*> m_clickable_texts;
 	};
 }
 

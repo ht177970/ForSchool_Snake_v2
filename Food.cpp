@@ -2,21 +2,6 @@
 #include <random>
 
 namespace rg {
-	/*Food* Food::generateFood(int outgame_size, int game_width, int game_height, int size) {
-		std::random_device random;
-		std::mt19937 generator(random());
-		int x = generator() % (game_width/size);//+1-1¬Û©è
-		int y = generator() % (game_height/size);//¦P¤W
-		return new Food(outgame_size + x * size, outgame_size + y * size, size);
-	}
-
-	Food::Food(int X, int Y, int size) {
-		x = X;
-		y = Y;
-		grap.setPosition(x, y);
-		grap.setSize(sf::Vector2f(size, size));
-		grap.setFillColor(sf::Color::Yellow);
-	}*/
 
 	Food::Food(int outgame_size, int game_width, int game_height, int size) {
 		this->outgame_size = outgame_size;
@@ -51,8 +36,4 @@ namespace rg {
 	void Food::setColor(sf::Color new_color) {
 		grap.setFillColor(new_color);
 	}
-
-	/*sf::RectangleShape Food::getDrawable() {
-		return grap;
-	}*/
 }

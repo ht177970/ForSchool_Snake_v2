@@ -7,14 +7,8 @@ namespace rg {
 	class BaseDrawable {
 	public:
 		virtual ~BaseDrawable() = default;
-		//virtual void Update() = 0;
 		virtual void draw(sf::RenderWindow& window) = 0;
 	};
-
-	/*class Clickable_Menu {
-	public:
-		virtual 
-	};*/
 
 	struct Pos {
 		int x, y;

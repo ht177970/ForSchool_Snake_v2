@@ -6,7 +6,6 @@ namespace rg {
 #pragma region Unit functions
 
 	Unit::Unit(Unit* previous_unit, int X, int Y, int size) : Unit(previous_unit, X, Y) {
-		//grap.setRadius(size / 2);
 		grap.setSize(sf::Vector2f(size, size));
 		grap.setFillColor(sf::Color::Cyan);
 	}
@@ -36,7 +35,7 @@ namespace rg {
 		m_size = size;
 		c_adjust_x = 0;
 		c_adjust_y = 0;
-		m_grap_rect.setSize(sf::Vector2f(m_size, m_size /2));
+		m_grap_rect.setSize(sf::Vector2f(m_size / 2, m_size));
 		m_grap_rect.setFillColor(sf::Color::Color(0, 139, 139));
 		m_grap_circle.setRadius(m_size / 2);
 		m_grap_circle.setFillColor(sf::Color::Color(0, 139, 139));
@@ -86,9 +85,6 @@ namespace rg {
 		}
 	}
 
-	/*Unit* Unit::next() {
-		return u2;
-	}*/
 #pragma endregion
 
 	Snake::Snake(int* outgame_size, int* ingame_width, int* ingame_height, int SIZE) {
@@ -101,9 +97,11 @@ namespace rg {
 		m_tail_y = y;
 		size = SIZE;
 		head = new HeadUnit(nullptr, x, y, size);//head's prev is nullptr
-		tail = head;
-		now_direction = Ways::Non;
-		last_move_direction = Ways::Non;
+		tail = new Unit(head, x - size, y, size);//start with one body
+		head->setNext(tail);
+
+		now_direction = Ways::R;
+		last_move_direction = Ways::R;
 	}
 
 	void Snake::setDirection(Ways new_direction) {
@@ -149,7 +147,7 @@ namespace rg {
 		if (now_direction != last_move_direction)
 			dynamic_cast<HeadUnit*>(head)->onWayChanged(now_direction);
 		last_move_direction = now_direction;
-		if (illegalPos())//edit later
+		if (illegalPos())
 			return false;
 		Unit* moving = tail;
 		Pos last_position = tail->getPos();
@@ -173,20 +171,6 @@ namespace rg {
 			if (testing->getPos() == position)
 				return true;
 			testing = testing->prev();
-		}
-		return false;
-	}
-
-	bool Snake::wait_start(sf::RenderWindow& window) {
-		sf::Event e;
-		while (window.isOpen()) {
-			while (window.pollEvent(e))
-				if (e.type == sf::Event::Closed) {
-					window.close();
-					return false;
-				}
-			if (this->detectWayKeys())
-				return true;
 		}
 		return false;
 	}

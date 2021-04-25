@@ -4,21 +4,13 @@
 #include "Snake.hpp"
 #include "Food.hpp"
 #include "Base.hpp"
+#include "Wall.hpp"
+#include "Global.hpp"
 #include "WindowRender.hpp"
+#include "AnimationManager.hpp"
 #include <SFML/Graphics.hpp>
 
 namespace rg {
-
-	class Wall : public BaseDrawable {
-	public:
-		explicit Wall(BaseData data);
-		~Wall() = default;
-		void draw(sf::RenderWindow& window) override;
-		void setColor(sf::Color new_color);
-	private:
-		int m_outgame_size, m_ingame_width, m_ingame_height, m_snake_size;
-		sf::Color m_color;
-	};
 
 	class Game {
 	private:
@@ -27,20 +19,26 @@ namespace rg {
 		Snake* m_game_snake;
 		Food* m_game_food;
 		Wall* m_wall;
+		AnimationSnake* A1;
+		AnimationFade* A2;
 		int m_outgame_size, m_ingame_width, m_ingame_height, m_snake_size;
-		int score;
 		float m_game_speed;
+		int score = 0;
+		sf::Clock gameclock;
+		float gameTime = 0.0f;
+		float move_per_time = 0.1f;
 		bool pause = false;
-		void GameOverSnakeAnimation();
-		void GameOverFadeAnimation();
-		void GameLoop();
 		bool isInFood();
 		void AteFood();
 		void genFood();
+		void handleEvent();
+		void displayGaming();
+		void displayA1();
+		void displayA2();
 	public:
 		explicit Game(sf::RenderWindow& window, renderManager& render, BaseData data, float game_speed);
 		~Game() = default;
-		void StartGame();
+		void display();
 		int getScore();
 	};
 }

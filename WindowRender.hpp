@@ -15,7 +15,6 @@ namespace rg {
 		void endGameRender(bool show_snake);
 		void addGraphics(BaseDrawable* grap);
 		void clearAllGraphics();
-		bool startGame();
 	private:
 		std::vector<BaseDrawable*> m_AllGraphics;
 		Snake* m_snake;
