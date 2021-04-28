@@ -9,18 +9,17 @@
 namespace rg {
 	class Core {
 	public:
-		explicit Core();
+		explicit Core(sf::Font g_font, sf::Texture g_pic);
 		~Core() = default;
 		void Run();
 	private:
-		int m_outgame_size = 100, m_ingame_width = 800, m_ingame_height = 600, m_snake_size = 20;
 		int m_lastgame_score;
 		int m_highest_score;
 		sf::RenderWindow window;
 		renderManager m_renderManager;
-		MainMenu* m_mainmenu;
-		Game* m_game;
-		GameOverMenu* m_gameovermenu;
+		MainMenu* m_mainmenu = nullptr;
+		Game* m_game = nullptr;
+		GameOverMenu* m_gameovermenu = nullptr;
 		void display();
 	};
 }

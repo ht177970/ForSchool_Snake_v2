@@ -7,7 +7,7 @@
 namespace rg {
 	class Food : public BaseDrawable {
 	public:
-		Food(int outgame_size, int game_width, int game_height, int size);
+		Food(BaseData data);
 		void generateNewPosition();
 		int getX();
 		int getY();

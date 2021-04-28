@@ -55,8 +55,8 @@ namespace rg {
 		this->window->setView(sf::View(sf::FloatRect(0, 0, width, height)));
 		this->window->setTitle("Snake Game");
 
-		this->m_game_snake = new Snake(&m_outgame_size, &m_ingame_width, &m_ingame_height, m_snake_size);
-		this->m_game_food = new Food(m_outgame_size, m_ingame_width, m_ingame_height, m_snake_size);
+		this->m_game_snake = new Snake(data);
+		this->m_game_food = new Food(data);
 		this->m_wall = new Wall(data);
 
 		this->m_renderManager->clearAllGraphics();

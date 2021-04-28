@@ -5,11 +5,17 @@
 
 namespace rg {
 
-	Core::Core() : m_renderManager(window) {
+	Core::Core(sf::Font g_font, sf::Texture g_pic) : m_renderManager(window) {
 		window.create(sf::VideoMode(MENU_WITDH, MENU_HEIGHT), "MainMenu", sf::Style::Close | sf::Style::Titlebar);
 		window.setFramerateLimit(60);
 		this->m_lastgame_score = 0;
 		this->m_highest_score = 0;
+		this->m_mainmenu = nullptr;
+		this->m_game = nullptr;
+		this->m_gameovermenu = nullptr;
+
+		Global::settings.setFont(g_font);
+		Global::settings.setPic(g_pic);
 	}
 
 	void Core::Run() {
@@ -37,7 +43,8 @@ namespace rg {
 				Global::C_afterRebuild();
 				if (this->m_game)
 					delete this->m_game;
-				m_game = new Game(window, m_renderManager, BaseData(m_outgame_size, m_ingame_width, m_ingame_height, m_snake_size), 0.001f);
+				m_game = new Game(window, m_renderManager, BaseData(Global::settings.getOutGameSize(), Global::settings.getInGameWidth(),
+					Global::settings.getInGameHeight(), Global::settings.getSnakeSize()), 0.001f);
 			}
 			m_game->display();
 			break;

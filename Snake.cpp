@@ -87,15 +87,15 @@ namespace rg {
 
 #pragma endregion
 
-	Snake::Snake(int* outgame_size, int* ingame_width, int* ingame_height, int SIZE) {
-		m_outgame_size = outgame_size;
-		m_ingame_width = ingame_width;
-		m_ingame_height = ingame_height;
-		x = *m_ingame_width / 2;
-		y = *m_ingame_height / 2;
+	Snake::Snake(BaseData data) {
+		m_outgame_size = data.outgame_size;
+		m_ingame_width = data.ingame_width;
+		m_ingame_height = data.ingame_height;
+		x = m_outgame_size + m_ingame_width / 4;
+		y = m_outgame_size + m_ingame_height / 2;
 		m_tail_x = x;
 		m_tail_y = y;
-		size = SIZE;
+		size = data.snake_size;
 		head = new HeadUnit(nullptr, x, y, size);//head's prev is nullptr
 		tail = new Unit(head, x - size, y, size);//start with one body
 		head->setNext(tail);
@@ -162,7 +162,7 @@ namespace rg {
 	}
 
 	bool Snake::illegalPos() {
-		return (x < *m_outgame_size || y < *m_outgame_size || x > *m_outgame_size + *m_ingame_width - size || y > *m_outgame_size + *m_ingame_height - size);
+		return (x < m_outgame_size || y < m_outgame_size || x > m_outgame_size + m_ingame_width - size || y > m_outgame_size + m_ingame_height - size);
 	}
 
 	bool Snake::posInBody(Pos position) {

@@ -4,6 +4,7 @@ namespace rg {
 	CMode Global::C_now_mode = CMode::NONE;
 	bool Global::C_rebuild = true;
 	GMode Global::G_now_mode= GMode::NONE;
+	Settings Global::settings = Settings();
 
 	void Global::C_changeCMode(CMode new_mode) {
 		Global::C_now_mode = new_mode;

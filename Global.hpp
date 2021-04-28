@@ -1,6 +1,8 @@
 #ifndef SNAKE_RG_GLOBAL_H_
 #define SNAKE_RG_GLOBAL_H_
 
+#include "Settings.hpp"
+
 namespace rg {
 	static enum class CMode {
 		MAIN_MENU, GAMING, SETTINGS, GAMEOVER, NONE
@@ -17,6 +19,7 @@ namespace rg {
 		static bool C_Rebuild();
 		static void G_changeGMode(GMode new_mode);
 		static GMode G_getMode();
+		static Settings settings;
 	private:
 		static CMode C_now_mode;
 		static bool C_rebuild;

@@ -14,22 +14,26 @@ namespace rg {
 				window->close();
 				return;
 			case sf::Event::KeyPressed:
-				switch (e.key.code) {
-				case sf::Keyboard::Up:
-					if (--m_text_index < 0)
-						m_text_index = m_clickable_texts.size() - 1;
-					break;
-				case sf::Keyboard::Down:
-					if (++m_text_index > m_clickable_texts.size() - 1)
-						m_text_index = 0;
-					break;
-				case sf::Keyboard::Enter:
-					EnterPressed();
-					break;
-				}
+				OnKeyDown(e.key.code);
 				break;
 			}
 		m_renderManager->Render();
+	}
+
+	void ClickableMenu::OnKeyDown(sf::Keyboard::Key keycode) {
+		switch (keycode) {
+		case sf::Keyboard::Up:
+			if (--m_text_index < 0)
+				m_text_index = m_clickable_texts.size() - 1;
+			break;
+		case sf::Keyboard::Down:
+			if (++m_text_index > m_clickable_texts.size() - 1)
+				m_text_index = 0;
+			break;
+		case sf::Keyboard::Enter:
+			EnterPressed();
+			break;
+		}
 	}
 
 #pragma region MainMenu
@@ -47,19 +51,25 @@ namespace rg {
 	void MainMenu::initMenu() {
 		sf::String texts[] = { L"開始遊戲", L"遊戲設定", L"離開" };
 		int x = 300, y = 300, next_y = 120;
-		sf::Font font;
-		font.loadFromFile("font.ttf");
 
-		m_renderManager->addGraphics(new Text(L"↑↓  選擇", font, -1, nullptr, 50, 760, 20U));
-		m_renderManager->addGraphics(new Text(L"Enter確認", font, -1, nullptr, 50, 780, 20U));
+		Text* help1 = new Text(L"↑↓  選擇", 49, 766);
+		Text* help2 = new Text(L"Enter確認", 49, 786);
+		help1->setTextSize(20U);
+		help2->setTextSize(20U);
+		m_renderManager->addGraphics(help1);
+		m_renderManager->addGraphics(help2);
 
-		for (int i = 0; i < 3; i++)
-			m_clickable_texts.push_back(new Text(texts[i], font, i, &m_text_index, x, y += next_y));
+		for (int i = 0; i < 3; i++) {
+			auto tmp = new Text(texts[i], x, y += next_y);
+			tmp->setId(i);
+			tmp->setTextIndexPointer(&m_text_index);
+			m_clickable_texts.push_back(tmp);
+		}
 		for (Text* t : m_clickable_texts)
 			m_renderManager->addGraphics(t);
 		m_text_index = 0;
 
-		m_renderManager->addGraphics(new Image(ImageBuilder("snake.png", 300, 200, 0.85f, 0.85f)));
+		m_renderManager->addGraphics(new Image(ImageBuilder(300, 200, 0.85f, 0.85f)));
 	}
 
 	void MainMenu::EnterPressed() {
@@ -85,17 +95,34 @@ namespace rg {
 	void GameOverMenu::initMenu(int score, int highest_score) {
 		std::wstringstream ss;
 		ss << L" 你這次得到了 " << score << L" 分!";
-		sf::Font font;
-		font.loadFromFile("font.ttf");
-		m_renderManager->addGraphics(new Text(ss.str(), font, -1, nullptr, 500, 200, 90U, sf::Color(0, 255, 0)));//color = lime
+
+		int t_x = Global::settings.getIngameScreenWidth() / 2, t_y = Global::settings.getIngameScreenHeight() / 4;
+		unsigned int text_size;
+		text_size = static_cast<unsigned int>(90.f * t_x / 500);
+
+		Text* now_score_t = new Text(ss.str(), t_x, t_y);//x = 500(1000), y = 200(800)
+		now_score_t->setTextSize(text_size);//90(1000)
+		now_score_t->setTextColor(sf::Color(0, 255, 0));
+		m_renderManager->addGraphics(now_score_t);//color = lime
+
 		ss.str(L"");
 		ss << L"歷史最高 " << highest_score << L" 分";
-		m_renderManager->addGraphics(new Text(ss.str(), font, -1, nullptr, 500, 290, 30U, sf::Color(143, 188, 143)));//color = orange
+		Text* highest_score_t = new Text(ss.str(), t_x, t_y + text_size);
+		text_size = static_cast<unsigned int>(30.f * t_x / 500);
+		highest_score_t->setTextSize(text_size);
+		highest_score_t->setTextColor(sf::Color(143, 188, 143));
+		m_renderManager->addGraphics(highest_score_t);//color = orange
 
 		sf::String texts[] = { L"回主選單", L"離開" };
-		int x = 500, y = 280, next_y = 120;
-		for (int i = 0; i < 2; i++)
-			m_clickable_texts.push_back(new Text(texts[i], font, i, &m_text_index, x, y += next_y));
+		t_y += text_size * 4;
+		text_size = static_cast<unsigned int>(60.f * t_x / 500);
+		for (int i = 0; i < 2; i++) {
+			auto tmp = new Text(texts[i], t_x, t_y += text_size*2);
+			tmp->setTextSize(text_size);
+			tmp->setId(i);
+			tmp->setTextIndexPointer(&m_text_index);
+			m_clickable_texts.push_back(tmp);
+		}
 		for (Text* t : m_clickable_texts)
 			m_renderManager->addGraphics(t);
 		m_text_index = 0;
@@ -114,14 +141,30 @@ namespace rg {
 
 #pragma region objects
 
-	Text::Text(sf::String text, sf::Font font, int id, int* text_index, float x, float y, unsigned int size, sf::Color text_color) {
-		this->m_id = id;
-		this->m_font = font;
-		this->grap = sf::Text(text, m_font, size);
+	Text::Text(sf::String text, float x, float y) {
+		this->m_id = -1;//default
+		this->m_font = Global::settings.getFont();
+		this->grap = sf::Text(text, m_font, 60U);//default
 		this->grap.setOrigin(grap.getLocalBounds().width / 2, grap.getLocalBounds().height / 2);
-		this->grap.setFillColor(text_color);
 		this->grap.setPosition(x, y);
+		this->index = nullptr;
+	}
+
+	void Text::setId(int id) {
+		this->m_id = id;
+	}
+
+	void Text::setTextIndexPointer(int* text_index) {
 		this->index = text_index;
+	}
+
+	void Text::setTextSize(unsigned int size) {
+		this->grap.setCharacterSize(size);
+		this->grap.setOrigin(grap.getLocalBounds().width / 2, grap.getLocalBounds().height / 2);
+	}
+
+	void Text::setTextColor(sf::Color color) {
+		this->grap.setFillColor(color);
 	}
 
 	int Text::getId() {
@@ -139,7 +182,7 @@ namespace rg {
 	}
 
 	Image::Image(ImageBuilder ib) {
-		texture.loadFromFile(ib.p_location);
+		texture = Global::settings.getPic();
 		sprite.setTexture(texture);
 		sprite.setScale(sf::Vector2f(ib.zoom_x, ib.zoom_y));
 		sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);

@@ -27,7 +27,8 @@ namespace rg {
 	class Snake : public BaseDrawable{
 	public:
 		enum class Ways { UP = 1, DOWN = -1, R = 2, L = -2, Non = 0};//R = Right, L = Left
-		explicit Snake(int* outgame_size, int* ingame_width, int* ingame_height, int SIZE);
+		//explicit Snake(int outgame_size, int ingame_width, int ingame_height, int SIZE);
+		explicit Snake(BaseData data);
 		~Snake();
 		bool move();
 		int getHeadX() { return x; };
@@ -42,7 +43,7 @@ namespace rg {
 		int x, y;
 		int size;
 		int m_tail_x, m_tail_y;
-		int* m_outgame_size, * m_ingame_width, * m_ingame_height;
+		int m_outgame_size, m_ingame_width, m_ingame_height;
 		Ways now_direction, last_move_direction;
 		Unit* head;
 		Unit* tail;

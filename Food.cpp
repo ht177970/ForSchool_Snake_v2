@@ -3,11 +3,11 @@
 
 namespace rg {
 
-	Food::Food(int outgame_size, int game_width, int game_height, int size) {
-		this->outgame_size = outgame_size;
-		this->game_width = game_width;
-		this->game_height = game_height;
-		this->size = size;
+	Food::Food(BaseData data) {
+		this->outgame_size = data.outgame_size;
+		this->game_width = data.ingame_width;
+		this->game_height = data.ingame_height;
+		this->size = data.snake_size;
 		this->generateNewPosition();
 	}
 
