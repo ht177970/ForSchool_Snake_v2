@@ -113,10 +113,10 @@ namespace rg {
 		highest_score_t->setTextColor(sf::Color(143, 188, 143));
 		m_renderManager->addGraphics(highest_score_t);//color = orange
 
-		sf::String texts[] = { L"回主選單", L"離開" };
+		sf::String texts[] = { L"再玩一次", L"回主選單", L"離開" };
 		t_y += text_size * 4;
 		text_size = static_cast<unsigned int>(60.f * t_x / 500);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 3; i++) {
 			auto tmp = new Text(texts[i], t_x, t_y += text_size*2);
 			tmp->setTextSize(text_size);
 			tmp->setId(i);
@@ -131,9 +131,12 @@ namespace rg {
 	void GameOverMenu::EnterPressed() {
 		switch (m_text_index) {
 		case 0:
-			Global::C_changeCMode(CMode::MAIN_MENU);
+			Global::C_changeCMode(CMode::GAMING);
 			break;
 		case 1:
+			Global::C_changeCMode(CMode::MAIN_MENU);
+			break;
+		case 2:
 			window->close();
 			break;
 		}
