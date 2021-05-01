@@ -21,6 +21,9 @@ namespace rg {
 		Game* m_game = nullptr;
 		GameOverMenu* m_gameovermenu = nullptr;
 		void display();
+		void display_MainMenu();
+		void display_Game();
+		void display_GameOver();
 	};
 }
 

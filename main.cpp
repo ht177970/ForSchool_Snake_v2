@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 #include "Core.hpp"
 
 sf::Texture t;
@@ -10,13 +11,19 @@ sf::Font f;
 int loadFile();*/
 
 int main() {
-	if (!t.loadFromFile("snake.png") || !f.loadFromFile("font.ttf"))
+	if (!t.loadFromFile("snake.png") || !f.loadFromFile("font.ttf")) {
+		std::fstream f;
+		f.open("error.log", std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+		f << "載入遊戲必要檔案時發生錯誤(可能是檔案不存在)";
+		f.close();
 		return -1;
+	}
 	
 	rg::Core c(f, t);
 	c.Run();
 	return 0;
 }
+//MessageBox與SFML衝突
 /*
 bool init() {
 	switch (loadFile()) {

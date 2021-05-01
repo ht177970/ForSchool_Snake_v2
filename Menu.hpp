@@ -8,23 +8,9 @@
 #include <SFML/System/String.hpp>
 
 namespace rg {
-	struct ImageBuilder {
-		std::string p_location;
-		float x;
-		float y; 
-		float zoom_x; 
-		float zoom_y;
-		ImageBuilder(float x, float y, float zoom_x, float zoom_y) {
-			this->x = x;
-			this->y = y;
-			this->zoom_x = zoom_x;
-			this->zoom_y = zoom_y;
-		}
-	};
 
 	class Text : public BaseDrawable {
 	public:
-		//explicit Text(sf::String text, sf::Font font, int id, int* text_index, float x, float y, unsigned int size = 60U, sf::Color text_color = sf::Color::White);
 		explicit Text(sf::String text, float x, float y);
 		~Text() = default;
 		void setId(int id);
@@ -33,17 +19,18 @@ namespace rg {
 		void setTextColor(sf::Color color);
 		int getId();
 		void draw(sf::RenderWindow& window) override;
-		void updateText();
+		bool isPosIn(int x, int y);
 	private:
 		sf::Text grap;
 		sf::Font m_font;
 		int m_id;
 		int* index;
+		void updateText();
 	};
 
-	class Image : public BaseDrawable {
+	class MainImage : public BaseDrawable {
 	public:
-		explicit Image(ImageBuilder ib);
+		explicit MainImage();
 		void draw(sf::RenderWindow& window) override;
 	private:
 		sf::Texture texture;
@@ -64,8 +51,11 @@ namespace rg {
 	protected:
 		int m_text_index;
 		std::vector<Text*> m_clickable_texts;
-		void OnKeyDown(sf::Keyboard::Key keycode);
-		virtual void EnterPressed() = 0;
+		int changeTextIndex(int new_index);
+		void onKeyDown(sf::Keyboard::Key keycode);
+		void onMouseMove(sf::Event::MouseMoveEvent mouse);
+		void onMouseClick();
+		virtual void EnterPressed(int index) = 0;
 	};
 
 	class MainMenu : public ClickableMenu {
@@ -73,7 +63,7 @@ namespace rg {
 		explicit MainMenu(sf::RenderWindow& window, renderManager& render);
 		~MainMenu() = default;
 		void initMenu();
-		void EnterPressed();
+		void EnterPressed(int index);
 	};
 
 	class GameOverMenu : public ClickableMenu {
@@ -81,7 +71,7 @@ namespace rg {
 		explicit GameOverMenu(sf::RenderWindow& window, renderManager& render);
 		~GameOverMenu() = default;
 		void initMenu(int score, int highest_score);
-		void EnterPressed();
+		void EnterPressed(int index);
 	};
 }
 

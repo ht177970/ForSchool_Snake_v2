@@ -14,26 +14,54 @@ namespace rg {
 				window->close();
 				return;
 			case sf::Event::KeyPressed:
-				OnKeyDown(e.key.code);
+				onKeyDown(e.key.code);
+				break;
+			case sf::Event::MouseMoved:
+				onMouseMove(e.mouseMove);
+				break;
+			case sf::Event::MouseButtonPressed:
+				onMouseClick();
 				break;
 			}
 		m_renderManager->Render();
 	}
 
-	void ClickableMenu::OnKeyDown(sf::Keyboard::Key keycode) {
+	int ClickableMenu::changeTextIndex(int new_index) {
+		this->m_text_index = new_index;
+		return this->m_text_index;
+	}
+
+	void ClickableMenu::onKeyDown(sf::Keyboard::Key keycode) {
 		switch (keycode) {
 		case sf::Keyboard::Up:
-			if (--m_text_index < 0)
-				m_text_index = m_clickable_texts.size() - 1;
+			if (changeTextIndex(m_text_index - 1) < 0)
+				changeTextIndex(m_clickable_texts.size() - 1);
 			break;
 		case sf::Keyboard::Down:
-			if (++m_text_index > m_clickable_texts.size() - 1)
-				m_text_index = 0;
+			if (changeTextIndex(m_text_index + 1) > m_clickable_texts.size() - 1)
+				changeTextIndex(0);
 			break;
 		case sf::Keyboard::Enter:
-			EnterPressed();
+			EnterPressed(m_text_index);
 			break;
 		}
+	}
+
+	void ClickableMenu::onMouseMove(sf::Event::MouseMoveEvent mouse) {
+		for (auto t : m_clickable_texts)
+			if (t->isPosIn(mouse.x, mouse.y)) {
+				changeTextIndex(t->getId());
+				break;
+			}
+	}
+
+	void ClickableMenu::onMouseClick() {
+		sf::Vector2i mouse = sf::Mouse::getPosition(*window);
+		for (auto t : m_clickable_texts)
+			if (t->isPosIn(mouse.x, mouse.y)) {
+				EnterPressed(t->getId());
+				break;
+			}
 	}
 
 #pragma region MainMenu
@@ -49,6 +77,8 @@ namespace rg {
 	}
 
 	void MainMenu::initMenu() {
+		m_renderManager->addGraphics(new MainImage());
+
 		sf::String texts[] = { L"開始遊戲", L"遊戲設定", L"離開" };
 		int x = 300, y = 300, next_y = 120;
 
@@ -68,12 +98,10 @@ namespace rg {
 		for (Text* t : m_clickable_texts)
 			m_renderManager->addGraphics(t);
 		m_text_index = 0;
-
-		m_renderManager->addGraphics(new Image(ImageBuilder(300, 200, 0.85f, 0.85f)));
 	}
 
-	void MainMenu::EnterPressed() {
-		switch (m_text_index) {
+	void MainMenu::EnterPressed(int index) {
+		switch (index) {
 		case 0:
 			Global::C_changeCMode(CMode::GAMING);
 			break;
@@ -128,8 +156,8 @@ namespace rg {
 		m_text_index = 0;
 	}
 
-	void GameOverMenu::EnterPressed() {
-		switch (m_text_index) {
+	void GameOverMenu::EnterPressed(int index) {
+		switch (index) {
 		case 0:
 			Global::C_changeCMode(CMode::GAMING);
 			break;
@@ -184,15 +212,20 @@ namespace rg {
 			grap.setFillColor((*this->index == m_id) ? sf::Color::Yellow : sf::Color::White);
 	}
 
-	Image::Image(ImageBuilder ib) {
-		texture = Global::settings.getPic();
-		sprite.setTexture(texture);
-		sprite.setScale(sf::Vector2f(ib.zoom_x, ib.zoom_y));
-		sprite.setOrigin(sprite.getLocalBounds().width / 2, sprite.getLocalBounds().height / 2);
-		sprite.setPosition(ib.x, ib.y);
+	bool Text::isPosIn(int x, int y) {
+		sf::FloatRect grap_rect = grap.getLocalBounds();
+		int left = grap.getPosition().x - grap_rect.width / 2 + grap_rect.left, right = left + grap_rect.width;
+		int top = grap.getPosition().y - grap_rect.height / 2 + grap_rect.top, bottom = top + grap_rect.height;
+		return top <= y && y <= bottom && left <= x && x <= right;
 	}
 
-	void Image::draw(sf::RenderWindow& window) {
+	MainImage::MainImage() {
+		texture = Global::settings.getPic();
+		sprite.setTexture(texture);
+		sprite.setPosition(0, 0);
+	}
+
+	void MainImage::draw(sf::RenderWindow& window) {
 		window.draw(sprite);
 	}
 
