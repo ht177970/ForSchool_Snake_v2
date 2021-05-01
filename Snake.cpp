@@ -110,19 +110,19 @@ namespace rg {
 	}
 
 	bool Snake::detectWayKeys() {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 			this->setDirection(Snake::Ways::UP);
 			return true;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
 			this->setDirection(Snake::Ways::DOWN);
 			return true;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 			this->setDirection(Snake::Ways::R);
 			return true;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
 			this->setDirection(Snake::Ways::L);
 			return true;
 		}
