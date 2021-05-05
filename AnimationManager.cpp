@@ -27,11 +27,12 @@ namespace rg {
 		render->endGameRender(show_snake);
 	}
 
-	AnimationFade::AnimationFade(sf::RenderWindow& window, renderManager& render, Wall* wall, Food* food) {
+	AnimationFade::AnimationFade(sf::RenderWindow& window, renderManager& render, Wall* wall, Food* food, Background* background) {
 		this->window = &window;
 		this->render = &render;
 		this->wall = wall;
 		this->food = food;
+		this->background = background;
 	}
 
 	void AnimationFade::display() {
@@ -41,6 +42,7 @@ namespace rg {
 			fade_color = 0;
 		wall->setColor(sf::Color(fade_color, fade_color, fade_color));//White -> Black (255, 255, 255) -> (0, 0, 0)
 		food->setColor(sf::Color(fade_color, fade_color, 0));//Yellow -> Black (255, 255, 0) -> (0, 0, 0)
+		background->FadeBlack(fade_color);
 
 		render->endGameRender(false);
 		if (fade_color == 0)

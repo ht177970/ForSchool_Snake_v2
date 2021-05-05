@@ -4,7 +4,7 @@
 #include "Snake.hpp"
 #include "Food.hpp"
 #include "Base.hpp"
-#include "Wall.hpp"
+#include "GameObject.hpp"
 #include "Global.hpp"
 #include "WindowRender.hpp"
 #include "AnimationManager.hpp"
@@ -19,6 +19,7 @@ namespace rg {
 		Snake* m_game_snake;
 		Food* m_game_food;
 		Wall* m_wall;
+		Background* m_background;
 		AnimationSnake* A1;
 		AnimationFade* A2;
 		int m_outgame_size, m_ingame_width, m_ingame_height, m_snake_size;

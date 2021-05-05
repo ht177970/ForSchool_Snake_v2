@@ -1,8 +1,8 @@
 #include "Game.hpp"
 #include "Core.hpp"
-#include "Wall.hpp"
 #include <iostream>
 #include <cstring>
+#include <random>
 
 namespace rg {
 
@@ -39,6 +39,39 @@ namespace rg {
 		}
 	}
 
+	Background::Background(BaseData data) {
+		int width = data.outgame_size * 2 + data.ingame_width, height = data.outgame_size * 2 + data.ingame_height;
+		grap.setSize(sf::Vector2f(width, height));
+		grap.setFillColor(sf::Color::Color(178, 255, 102));
+	}
+
+	void Background::setColor(sf::Color new_color) {
+		grap.setFillColor(new_color);
+	}
+
+	sf::Color Background::getColor() {
+		return grap.getFillColor();
+	}
+
+	void Background::FadeBlack(int _color) {
+		sf::Color now_color = this->getColor();
+		int color[] = { now_color.r, now_color.g , now_color.b };
+		int max = 0;
+		for (int i = 0; i < 3; i++) {
+			if ((color[i] -= 2) < 0)
+				color[i] = 0;
+			if (color[i] > max)
+				max = color[i];
+		}
+		if(max + 10 > _color)
+			this->setColor(sf::Color(color[0], color[1], color[2]));
+	}
+
+	void Background::draw(sf::RenderWindow& window) {
+		window.draw(grap);
+	}
+	
+
 
 
 	Game::Game(sf::RenderWindow& _window, renderManager& render, BaseData data, float game_speed) {
@@ -53,20 +86,23 @@ namespace rg {
 		int width = m_outgame_size * 2 + m_ingame_width, height = m_outgame_size * 2 + m_ingame_height;
 		this->window->setSize(sf::Vector2u(width, height));
 		this->window->setView(sf::View(sf::FloatRect(0, 0, width, height)));
-		this->window->setTitle("Snake Game");
+		this->window->setTitle("Snake Game");]
+		this->window->
 
 		this->m_game_snake = new Snake(data);
 		this->m_game_food = new Food(data);
 		this->m_wall = new Wall(data);
+		this->m_background = new Background(data);
 
 		this->m_renderManager->clearAllGraphics();
+		this->m_renderManager->addGraphics(this->m_background);
 		this->m_renderManager->addGraphics(this->m_wall);
 		this->m_renderManager->addGraphics(this->m_game_food);
 		this->m_renderManager->addGraphics(this->m_game_snake);
 		this->m_renderManager->setSanke(m_game_snake);
 
 		this->A1 = new AnimationSnake(_window, render, m_game_snake);
-		this->A2 = new AnimationFade(_window, render, m_wall, m_game_food);
+		this->A2 = new AnimationFade(_window, render, m_wall, m_game_food, m_background);
 
 		Global::G_changeGMode(GMode::Gaming);
 	}
@@ -141,6 +177,10 @@ namespace rg {
 		score++;
 		this->genFood();
 		m_game_snake->gainFood();
+		//temp
+		std::random_device random;
+		std::mt19937 generator(random());
+		m_background->setColor(sf::Color(generator() % 256, generator() % 256, generator() % 256));
 	}
 
 	void Game::genFood() {

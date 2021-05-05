@@ -109,24 +109,31 @@ namespace rg {
 			now_direction = new_direction;
 	}
 
-	bool Snake::detectWayKeys() {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+	bool Snake::UpkeyDown() {
+		return sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+	}
+
+	bool Snake::DownkeyDown() {
+		return sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+	}
+
+	bool Snake::RightkeyDown() {
+		return sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+	}
+
+	bool Snake::LeftkeyDown() {
+		return sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+	}
+
+	void Snake::detectWayKeys() {
+		if (UpkeyDown())
 			this->setDirection(Snake::Ways::UP);
-			return true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+		if (DownkeyDown())
 			this->setDirection(Snake::Ways::DOWN);
-			return true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+		if (RightkeyDown())
 			this->setDirection(Snake::Ways::R);
-			return true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+		if (LeftkeyDown())
 			this->setDirection(Snake::Ways::L);
-			return true;
-		}
-		return false;
 	}
 
 	bool Snake::move() {

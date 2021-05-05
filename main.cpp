@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <fstream>
 #include "Core.hpp"
+#include <fstream>
 
 sf::Texture t;
 sf::Font f;
@@ -18,8 +19,17 @@ int main() {
 		f.close();
 		return -1;
 	}
+
+	/*std::fstream fs;
+	fs.open("temp");
+	long l;
+	fs >> l;
+	if ((l - 17) % 131)
+		l = 0;
+	else
+		l = (l - 17) / 131;*/
 	
-	rg::Core c(f, t);
+ 	rg::Core c(f, t);
 	c.Run();
 	return 0;
 }

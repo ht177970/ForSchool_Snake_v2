@@ -1,4 +1,6 @@
 #include "Core.hpp"
+#include "DataManager.hpp"
+#include <fstream>
 
 #define MENU_WITDH 600
 #define MENU_HEIGHT 800
@@ -9,7 +11,7 @@ namespace rg {
 		window.create(sf::VideoMode(MENU_WITDH, MENU_HEIGHT), "MainMenu", sf::Style::Close | sf::Style::Titlebar);
 		window.setFramerateLimit(60);
 		this->m_lastgame_score = 0;
-		this->m_highest_score = 0;
+		this->m_highest_score = GameData::getHighestScore();
 		this->m_mainmenu = nullptr;
 		this->m_game = nullptr;
 		this->m_gameovermenu = nullptr;
@@ -67,8 +69,10 @@ namespace rg {
 				delete this->m_gameovermenu;
 			//score
 			m_lastgame_score = m_game->getScore();
-			if (m_lastgame_score > m_highest_score)
+			if (m_lastgame_score > m_highest_score) {
 				m_highest_score = m_lastgame_score;
+				GameData::saveHighestScore(m_highest_score);
+			}
 			//menu
 			m_gameovermenu = new GameOverMenu(window, m_renderManager);
 			m_gameovermenu->initMenu(this->m_lastgame_score, this->m_highest_score);

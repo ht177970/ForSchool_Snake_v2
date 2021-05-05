@@ -3,7 +3,7 @@
 
 #include "WindowRender.hpp"
 #include "Snake.hpp"
-#include "Wall.hpp"
+#include "GameObject.hpp"
 #include "Food.hpp"
 #include "Global.hpp"
 
@@ -39,13 +39,14 @@ namespace rg {
 
 	class AnimationFade : BaseAnimation {
 	public:
-		explicit AnimationFade(sf::RenderWindow& window, renderManager& render, Wall* snake, Food* food);
+		explicit AnimationFade(sf::RenderWindow& window, renderManager& render, Wall* snake, Food* food, Background* background);
 		~AnimationFade() = default;
 		void display();
 	private:
 		int fade_color = 255;
 		Wall* wall;
 		Food* food;
+		Background* background;
 	};
 }
 

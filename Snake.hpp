@@ -35,7 +35,7 @@ namespace rg {
 		int getHeadY() { return y; };
 		void draw(sf::RenderWindow& window) override;
 		void gainFood();
-		bool detectWayKeys();
+		void detectWayKeys();
 		bool posInBody(int x, int y) { return posInBody({ x,y }); }
 		bool posInBody(Pos position);
 		bool gameover_delete_tail();
@@ -51,6 +51,10 @@ namespace rg {
 		int getTailY_prev() { return m_tail_y; }
 		bool illegalPos();
 		void setDirection(Ways way);
+		bool UpkeyDown();
+		bool DownkeyDown();
+		bool RightkeyDown();
+		bool LeftkeyDown();
 	};
 
 	class HeadUnit : public Unit {
