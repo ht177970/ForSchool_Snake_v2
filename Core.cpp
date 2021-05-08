@@ -15,6 +15,7 @@ namespace rg {
 		this->m_mainmenu = nullptr;
 		this->m_game = nullptr;
 		this->m_gameovermenu = nullptr;
+		this->m_settingsmenu = nullptr;
 
 		Global::settings.setFont(g_font);
 		Global::settings.setPic(g_pic);
@@ -37,12 +38,15 @@ namespace rg {
 		case CMode::GAMEOVER:
 			display_GameOver();
 			break;
+		case CMode::SETTINGS:
+			display_Settings();
+			break;
 		}
 	}
 
 	void Core::display_MainMenu() {
 		if (Global::C_Rebuild()) {
-			Global::C_afterRebuild();
+			//Global::C_afterRebuild();
 			if (this->m_mainmenu)
 				delete this->m_mainmenu;
 			m_mainmenu = new MainMenu(window, m_renderManager);
@@ -53,7 +57,7 @@ namespace rg {
 
 	void Core::display_Game() {
 		if (Global::C_Rebuild()) {
-			Global::C_afterRebuild();
+			//Global::C_afterRebuild();
 			if (this->m_game)
 				delete this->m_game;
 			m_game = new Game(window, m_renderManager, BaseData(Global::settings.getOutGameSize(), Global::settings.getInGameWidth(),
@@ -64,7 +68,7 @@ namespace rg {
 
 	void Core::display_GameOver() {
 		if (Global::C_Rebuild()) {
-			Global::C_afterRebuild();
+			//Global::C_afterRebuild();
 			if (this->m_gameovermenu)
 				delete this->m_gameovermenu;
 			//score
@@ -78,5 +82,15 @@ namespace rg {
 			m_gameovermenu->initMenu(this->m_lastgame_score, this->m_highest_score);
 		}
 		m_gameovermenu->display();
+	}
+
+	void Core::display_Settings() {
+		if (Global::C_Rebuild()) {
+			if (this->m_settingsmenu)
+				delete this->m_settingsmenu;
+			m_settingsmenu = new SettingsMenu(window, m_renderManager);
+			m_settingsmenu->initMenu();
+		}
+		m_settingsmenu->display();
 	}
 }

@@ -20,12 +20,29 @@ namespace rg {
 		int getId();
 		void draw(sf::RenderWindow& window) override;
 		bool isPosIn(int x, int y);
-	private:
+	protected:
 		sf::Text grap;
 		sf::Font m_font;
 		int m_id;
 		int* index;
-		void updateText();
+		virtual void updateText();
+	};
+
+	class SettingsText : public Text {
+	public:
+		explicit SettingsText(std::vector<sf::String> texts, float x, float y, int default_index);
+		void onKeyDown(sf::Keyboard::Key keycode);
+		int getSubIndex() { return index; };
+	protected:
+		void updateText() override;
+	private:
+		int x, y;
+		int index;
+		bool tri_visible_left, tri_visible_right;
+		sf::VertexArray tri_left, tri_right;
+		std::vector<sf::String> texts;
+		void updateTri();
+		void draw(sf::RenderWindow& window) override;
 	};
 
 	class MainImage : public BaseDrawable {
@@ -48,13 +65,17 @@ namespace rg {
 	class ClickableMenu : protected BaseMenu {
 	public:
 		void display();
+		virtual int getClickableSize() { return m_clickable_texts.size(); };
+		virtual std::vector<Text*> getBaseClickable() { return m_clickable_texts; };
 	protected:
+		ClickableMenu(sf::RenderWindow& window, renderManager& render);
 		int m_text_index;
 		std::vector<Text*> m_clickable_texts;
 		int changeTextIndex(int new_index);
 		void onKeyDown(sf::Keyboard::Key keycode);
 		void onMouseMove(sf::Event::MouseMoveEvent mouse);
 		void onMouseClick();
+		virtual void otherKeyDown(sf::Keyboard::Key keycode) {};
 		virtual void EnterPressed(int index) = 0;
 	};
 
@@ -72,6 +93,20 @@ namespace rg {
 		~GameOverMenu() = default;
 		void initMenu(int score, int highest_score);
 		void EnterPressed(int index);
+	};
+
+	class SettingsMenu : public ClickableMenu {
+	public:
+		explicit SettingsMenu(sf::RenderWindow& window, renderManager& render);
+		~SettingsMenu() = default;
+		void initMenu();
+		void EnterPressed(int index);
+		void otherKeyDown(sf::Keyboard::Key keycode) override;
+		int getClickableSize() override { return s_clickable_texts.size(); };
+		std::vector<Text*> getBaseClickable() override;
+	private:
+		bool setting;
+		std::vector<SettingsText*> s_clickable_texts;
 	};
 }
 

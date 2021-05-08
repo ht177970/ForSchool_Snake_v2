@@ -20,10 +20,12 @@ namespace rg {
 		MainMenu* m_mainmenu = nullptr;
 		Game* m_game = nullptr;
 		GameOverMenu* m_gameovermenu = nullptr;
+		SettingsMenu* m_settingsmenu;
 		void display();
 		void display_MainMenu();
 		void display_Game();
 		void display_GameOver();
+		void display_Settings();
 	};
 }
 

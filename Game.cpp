@@ -42,7 +42,7 @@ namespace rg {
 	Background::Background(BaseData data) {
 		int width = data.outgame_size * 2 + data.ingame_width, height = data.outgame_size * 2 + data.ingame_height;
 		grap.setSize(sf::Vector2f(width, height));
-		grap.setFillColor(sf::Color::Color(178, 255, 102));
+		grap.setFillColor(Global::settings.getNewColor());//sf::Color::Color(178, 255, 102)
 	}
 
 	void Background::setColor(sf::Color new_color) {
@@ -86,8 +86,7 @@ namespace rg {
 		int width = m_outgame_size * 2 + m_ingame_width, height = m_outgame_size * 2 + m_ingame_height;
 		this->window->setSize(sf::Vector2u(width, height));
 		this->window->setView(sf::View(sf::FloatRect(0, 0, width, height)));
-		this->window->setTitle("Snake Game");]
-		this->window->
+		this->window->setTitle("Snake Game");
 
 		this->m_game_snake = new Snake(data);
 		this->m_game_food = new Food(data);
@@ -177,10 +176,11 @@ namespace rg {
 		score++;
 		this->genFood();
 		m_game_snake->gainFood();
-		//temp
-		std::random_device random;
-		std::mt19937 generator(random());
-		m_background->setColor(sf::Color(generator() % 256, generator() % 256, generator() % 256));
+		if(score % Global::settings.getCCperFood() == 0)
+			m_background->setColor(Global::settings.getNewColor());
+		//std::random_device random;
+		//std::mt19937 generator(random());
+		//sf::Color(generator() % 256, generator() % 256, generator() % 256)
 	}
 
 	void Game::genFood() {

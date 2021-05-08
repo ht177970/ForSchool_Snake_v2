@@ -6,6 +6,8 @@ namespace rg {
 	GMode Global::G_now_mode= GMode::NONE;
 	Settings Global::settings = Settings();
 
+	const sf::Color Global::Gray = sf::Color(192, 192, 192);
+
 	void Global::C_changeCMode(CMode new_mode) {
 		Global::C_now_mode = new_mode;
 		Global::C_rebuild = true;
@@ -15,11 +17,17 @@ namespace rg {
 		return Global::C_now_mode;
 	}
 
-	void Global::C_afterRebuild() {
+	/*void Global::C_afterRebuild() {
 		Global::C_rebuild = false;
-	}
+	}*/
 
+	//return need rebuild
+	//if need, vaule will change to false
 	bool Global::C_Rebuild() {
+		if (Global::C_rebuild) {
+			Global::C_rebuild = false;
+			return true;
+		}
 		return Global::C_rebuild;
 	}
 
