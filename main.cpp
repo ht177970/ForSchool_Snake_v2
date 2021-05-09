@@ -9,25 +9,19 @@ sf::Font font;
 #define SUCCEED 100;
 
 bool loadImage() {
-	HRSRC rsrcData = FindResource(NULL, L"MainImage", RT_RCDATA);
-	if (!rsrcData)
-		throw std::runtime_error("Failed to find resource.");
+	try {
+		HRSRC rsrcData = FindResource(NULL, L"MainImage", RT_RCDATA);
+		DWORD rsrcDataSize = SizeofResource(NULL, rsrcData);
+		HGLOBAL grsrcData = LoadResource(NULL, rsrcData);
+		LPVOID firstByte = LockResource(grsrcData);
 
-	DWORD rsrcDataSize = SizeofResource(NULL, rsrcData);
-	if (rsrcDataSize <= 0)
-		throw std::runtime_error("Size of resource is 0.");
-
-	HGLOBAL grsrcData = LoadResource(NULL, rsrcData);
-	if (!grsrcData)
-		throw std::runtime_error("Failed to load resource.");
-
-	LPVOID firstByte = LockResource(grsrcData);
-	if (!firstByte)
-		throw std::runtime_error("Failed to lock resource.");
-
-	if (!image.loadFromMemory(firstByte, rsrcDataSize))
-		throw std::runtime_error("Failed to load image from memory.");
-	return true;
+		if (!image.loadFromMemory(firstByte, rsrcDataSize))
+			throw std::runtime_error("Failed to load image from memory.");
+		return true;
+	}
+	catch(EXCEPINFO){
+		throw std::runtime_error("Failed to load image from resources.");
+	}
 }
 
 int main() {
