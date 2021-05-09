@@ -117,6 +117,8 @@ namespace rg {
 			case sf::Event::KeyPressed:
 				if (e.key.code == sf::Keyboard::P)//invisable
 					pause = !pause;
+				if (Global::G_getMode() == GMode::Gaming)
+					m_game_snake->detectWayKeys(e.key.code);
 				break;
 			}
 		}
@@ -139,8 +141,6 @@ namespace rg {
 
 	void Game::displayGaming() {
 		if (!pause) {
-			m_game_snake->detectWayKeys();
-
 			this->gameTime += gameclock.restart().asSeconds();
 			if (this->gameTime > this->move_per_time)
 			{
@@ -178,9 +178,6 @@ namespace rg {
 		m_game_snake->gainFood();
 		if(score % Global::settings.getCCperFood() == 0)
 			m_background->setColor(Global::settings.getNewColor());
-		//std::random_device random;
-		//std::mt19937 generator(random());
-		//sf::Color(generator() % 256, generator() % 256, generator() % 256)
 	}
 
 	void Game::genFood() {

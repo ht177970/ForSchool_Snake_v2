@@ -109,30 +109,30 @@ namespace rg {
 			now_direction = new_direction;
 	}
 
-	bool Snake::UpkeyDown() {
-		return sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W);
+	bool Snake::UpkeyDown(sf::Keyboard::Key keycode) {
+		return keycode == sf::Keyboard::Up || keycode == sf::Keyboard::W;
 	}
 
-	bool Snake::DownkeyDown() {
-		return sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S);
+	bool Snake::DownkeyDown(sf::Keyboard::Key keycode) {
+		return keycode == sf::Keyboard::Down || keycode == sf::Keyboard::S;
 	}
 
-	bool Snake::RightkeyDown() {
-		return sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D);
+	bool Snake::RightkeyDown(sf::Keyboard::Key keycode) {
+		return keycode == sf::Keyboard::Right || keycode == sf::Keyboard::D;
 	}
 
-	bool Snake::LeftkeyDown() {
-		return sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A);
+	bool Snake::LeftkeyDown(sf::Keyboard::Key keycode) {
+		return keycode == sf::Keyboard::Left || keycode == sf::Keyboard::A;
 	}
 
-	void Snake::detectWayKeys() {
-		if (UpkeyDown())
+	void Snake::detectWayKeys(sf::Keyboard::Key keycode) {
+		if (UpkeyDown(keycode))
 			this->setDirection(Snake::Ways::UP);
-		if (DownkeyDown())
+		if (DownkeyDown(keycode))
 			this->setDirection(Snake::Ways::DOWN);
-		if (RightkeyDown())
+		if (RightkeyDown(keycode))
 			this->setDirection(Snake::Ways::R);
-		if (LeftkeyDown())
+		if (LeftkeyDown(keycode))
 			this->setDirection(Snake::Ways::L);
 	}
 
