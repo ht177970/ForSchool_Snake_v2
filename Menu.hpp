@@ -17,9 +17,10 @@ namespace rg {
 		void setTextIndexPointer(int* text_index);
 		void setTextSize(unsigned int size);
 		void setTextColor(sf::Color color);
+		virtual void TextChanged() {};
 		int getId();
 		void draw(sf::RenderWindow& window) override;
-		bool isPosIn(int x, int y);
+		virtual bool isPosIn(sf::Vector2i pos);
 	protected:
 		sf::Text grap;
 		sf::Font m_font;
@@ -33,6 +34,7 @@ namespace rg {
 		explicit SettingsText(std::vector<sf::String> texts, float x, float y, int default_index);
 		void onKeyDown(sf::Keyboard::Key keycode);
 		int getSubIndex() { return index; };
+		sf::Keyboard::Key getVirtualKey();
 	protected:
 		void updateText() override;
 	private:
@@ -41,8 +43,12 @@ namespace rg {
 		bool tri_visible_left, tri_visible_right;
 		sf::VertexArray tri_left, tri_right;
 		std::vector<sf::String> texts;
+		sf::Keyboard::Key virtual_key;
 		void updateTri();
 		void draw(sf::RenderWindow& window) override;
+		void TextChanged() override;
+		bool isPosIn(sf::Vector2i pos) override;
+		bool PosInTri(Pos pos);
 	};
 
 	class MainImage : public BaseDrawable {

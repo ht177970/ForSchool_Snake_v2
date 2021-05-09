@@ -1,5 +1,7 @@
 #include "Menu.hpp"
 #include "Core.hpp"
+//temp
+#include <iostream>
 
 #define MENU_WITDH 600
 #define MENU_HEIGHT 800
@@ -22,7 +24,7 @@ namespace rg {
 			case sf::Event::Closed:
 				window->close();
 				return;
-			case sf::Event::KeyReleased:
+			case sf::Event::KeyPressed:
 				onKeyDown(e.key.code);
 				break;
 			case sf::Event::MouseMoved:
@@ -61,19 +63,16 @@ namespace rg {
 
 	void ClickableMenu::onMouseMove(sf::Event::MouseMoveEvent mouse) {
 		for (auto t : this->getBaseClickable())
-			if (t->isPosIn(mouse.x, mouse.y)) {
+			if (t->isPosIn(sf::Vector2i(mouse.x, mouse.y))) {
 				changeTextIndex(t->getId());
 				break;
 			}
 	}
 
 	void ClickableMenu::onMouseClick() {
-		sf::Vector2i mouse = sf::Mouse::getPosition(*window);
-		for (auto t : this->getBaseClickable())
-			if (t->isPosIn(mouse.x, mouse.y)) {
-				EnterPressed(t->getId());
-				break;
-			}
+		sf::Vector2i mousepos = sf::Mouse::getPosition(*window);
+		if (this->getBaseClickable()[m_text_index]->isPosIn(mousepos))
+			EnterPressed(m_text_index);
 	}
 
 #pragma endregion
@@ -197,7 +196,9 @@ namespace rg {
 			{L"關", L"慢", L"快"}
 		};
 		int default_index[] = { Global::settings.getColorMode(), Global::settings.getColorF_index()};
-		int x = 200, y = 200, next_y = 120;
+		//int x = 150, y = 200, next_y = 120;
+		Pos p = { 150, 200 };
+		int next_y = 120;
 
 		Text* help1 = new Text(L"↑↓  選擇", 49, 766);
 		Text* help2 = new Text(L"Enter確認", 49, 786);
@@ -219,11 +220,13 @@ namespace rg {
 		s_clickable_texts.push_back(n_saveSettings);
 
 		for (int i = 0; i < 2; i++) {
-			auto settings_name = new Text(texts[i], x, y += next_y);
+			auto settings_name = new Text(texts[i], p.x, p.y += next_y);
+			settings_name->setTextSize(30U);
+			settings_name->setTextColor(sf::Color::Black);
 			m_renderManager->addGraphics(settings_name);
 
-			auto settings_choose = new SettingsText(subs[i], x + 300, y, default_index[i]);
-			settings_choose->setId(i + id);
+			auto settings_choose = new SettingsText(subs[i], p.x + 200, p.y, default_index[i]);
+			settings_choose->setId(id + i);
 			settings_choose->setTextIndexPointer(&m_text_index);
 			settings_choose->setTextSize(40U);
 			s_clickable_texts.push_back(settings_choose);
@@ -243,13 +246,17 @@ namespace rg {
 	}
 
 	void SettingsMenu::EnterPressed(int index) { 
-		if (index == 0) {//0 = save
+		switch (index) {
+		case 0://save
 			Global::settings.setColorMode(s_clickable_texts[2]->getSubIndex());//2 = color settings
 			Global::settings.setColorF(s_clickable_texts[3]->getSubIndex());//3 = color change per second
+		case 1://dont save
 			Global::C_changeCMode(CMode::MAIN_MENU);
-		}
-		else if (index == 1) {//1 = no save
-			Global::C_changeCMode(CMode::MAIN_MENU);
+			break;
+		default:
+			SettingsText* clickedText = s_clickable_texts[index];
+			clickedText->onKeyDown(clickedText->getVirtualKey());
+			break;
 		}
 	}
 
@@ -260,7 +267,6 @@ namespace rg {
 
 
 #pragma endregion
-
 
 #pragma region objects
 
@@ -284,6 +290,7 @@ namespace rg {
 	void Text::setTextSize(unsigned int size) {
 		this->grap.setCharacterSize(size);
 		this->grap.setOrigin(grap.getLocalBounds().width / 2, grap.getLocalBounds().height / 2);
+		this->TextChanged();
 	}
 
 	void Text::setTextColor(sf::Color color) {
@@ -304,16 +311,12 @@ namespace rg {
 			this->setTextColor((*this->index == m_id) ? sf::Color::Yellow : sf::Color::White);
 	}
 
-	bool Text::isPosIn(int x, int y) {
+	bool Text::isPosIn(sf::Vector2i pos) {
 		sf::FloatRect grap_rect = grap.getLocalBounds();
-		//int left = grap.getPosition().x - grap_rect.width / 2 + grap_rect.left, right = left + grap_rect.width;
-		//int top = grap.getPosition().y - grap_rect.height / 2 + grap_rect.top, bottom = top + grap_rect.height;
-		/*return grap.getPosition().x - grap_rect.width / 2 + grap_rect.left <= x && x <= grap.getPosition().x + grap_rect.width / 2 + grap_rect.left &&
-			grap.getPosition().y - grap_rect.height / 2 + grap_rect.top <= y && y <= grap.getPosition().y + grap_rect.height / 2 + grap_rect.top;*/
-		x -= grap.getPosition().x + grap_rect.left - grap_rect.width / 2;
-		y -= grap.getPosition().y + grap_rect.top - grap_rect.height / 2;
-		return 0 <= x && x <= grap_rect.width &&
-			0 <= y && y <= grap_rect.height;
+		pos.x -= grap.getPosition().x + grap_rect.left - grap_rect.width / 2;
+		pos.y -= grap.getPosition().y + grap_rect.top - grap_rect.height / 2;
+		return 0 <= pos.x && pos.x <= grap_rect.width &&
+			0 <= pos.y && pos.y <= grap_rect.height;
 	}
 
 	MainImage::MainImage() {
@@ -326,8 +329,11 @@ namespace rg {
 		window.draw(sprite);
 	}
 
-	SettingsText::SettingsText(std::vector<sf::String> texts, float x, float y, int default_index) : Text(texts[default_index], x, y),
-		tri_left(sf::Triangles, 3), tri_right(sf::Triangles, 3) {
+	SettingsText::SettingsText(std::vector<sf::String> texts, float x, float y, int default_index) : 
+		Text(texts[default_index], x, y),
+		tri_left(sf::Triangles, 3), 
+		tri_right(sf::Triangles, 3) 
+	{
 
 		this->texts = texts;
 		this->x = x;
@@ -335,7 +341,12 @@ namespace rg {
 		index = default_index;
 		tri_visible_left = false;
 		tri_visible_right = false;
-		//updateTri();
+		virtual_key = sf::Keyboard::Unknown;
+		updateTri();
+	}
+
+	void SettingsText::TextChanged() {
+		this->updateTri();
 	}
 
 	void SettingsText::draw(sf::RenderWindow& window) {
@@ -347,14 +358,7 @@ namespace rg {
 	}
 
 	void SettingsText::updateText() {
-		grap.setString(texts[index]);
-		grap.setOrigin(grap.getLocalBounds().width / 2, grap.getLocalBounds().height / 2);
-		if (*Text::index == this->m_id) {
-			this->setTextColor(sf::Color::Yellow);
-			this->updateTri();
-		}
-		else
-			this->setTextColor(sf::Color::White);
+		this->setTextColor((*Text::index == this->m_id) ? sf::Color::Yellow : sf::Color::White);
 	}
 
 	void SettingsText::onKeyDown(sf::Keyboard::Key keycode) {
@@ -362,6 +366,9 @@ namespace rg {
 			index--;
 		else if (keycode == sf::Keyboard::Right && index < texts.size() - 1)
 			index++;
+		grap.setString(texts[index]);
+		grap.setOrigin(grap.getLocalBounds().width / 2, grap.getLocalBounds().height / 2);
+		this->updateTri();
 	}
 
 	void SettingsText::updateTri() {
@@ -384,6 +391,41 @@ namespace rg {
 		tri_right[0].position = p1;
 		tri_right[1].position = p2;
 		tri_right[2].position = p3;
+	}
+
+	bool SettingsText::isPosIn(sf::Vector2i pos) {
+		this->virtual_key = sf::Keyboard::Unknown;
+		if (Text::isPosIn(pos))
+			return true;
+		if (*Text::index == this->m_id && texts.size() > 1) {
+			return this->PosInTri(pos);
+		}
+		return false;
+	}
+
+	bool SettingsText::PosInTri(Pos pos) {
+		Vec2d vec(pos);
+		//left
+		vec.setA(tri_left[0].position);
+		vec.setB(tri_left[1].position);
+		vec.setC(tri_left[2].position);
+		if (vec.PointInTri()) {
+			this->virtual_key = sf::Keyboard::Left;
+			return true;
+		}
+		//right
+		vec.setA(tri_right[0].position);
+		vec.setB(tri_right[1].position);
+		vec.setC(tri_right[2].position);
+		if (vec.PointInTri()) {
+			this->virtual_key = sf::Keyboard::Right;
+			return true;
+		}
+		return false;
+	}
+
+	sf::Keyboard::Key SettingsText::getVirtualKey() {
+		return this->virtual_key;
 	}
 
 #pragma endregion
