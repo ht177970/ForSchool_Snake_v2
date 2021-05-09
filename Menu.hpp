@@ -11,7 +11,7 @@ namespace rg {
 
 	class Text : public BaseDrawable {
 	public:
-		explicit Text(sf::String text, float x, float y);
+		explicit Text(sf::String text, Pos position);
 		~Text() = default;
 		void setId(int id);
 		void setTextIndexPointer(int* text_index);
@@ -31,7 +31,7 @@ namespace rg {
 
 	class SettingsText : public Text {
 	public:
-		explicit SettingsText(std::vector<sf::String> texts, float x, float y, int default_index);
+		explicit SettingsText(std::vector<sf::String> texts, Pos position, int default_index);
 		void onKeyDown(sf::Keyboard::Key keycode);
 		int getSubIndex() { return index; };
 		sf::Keyboard::Key getVirtualKey();

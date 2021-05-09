@@ -33,6 +33,16 @@ namespace rg {
 			this->y = v2i.y;
 		}
 
+		Pos AddX(float delta) {
+			this->x += delta;
+			return *this;
+		}
+
+		Pos AddY(float delta) {
+			this->y += delta;
+			return *this;
+		}
+
 		bool operator==(Pos other) {
 			return (x == other.x && y == other.y);
 		}

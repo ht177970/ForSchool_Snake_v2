@@ -1,7 +1,5 @@
 #include "Menu.hpp"
 #include "Core.hpp"
-//temp
-#include <iostream>
 
 #define MENU_WITDH 600
 #define MENU_HEIGHT 800
@@ -89,17 +87,18 @@ namespace rg {
 		m_renderManager->addGraphics(new MainImage());
 
 		sf::String texts[] = { L"開始遊戲", L"遊戲設定", L"離開" };
-		int x = 300, y = 300, next_y = 120;
+		Pos position = Pos(300, 300);
+		int next_y = 120;
 
-		Text* help1 = new Text(L"↑↓  選擇", 49, 766);
-		Text* help2 = new Text(L"Enter確認", 49, 786);
+		Text* help1 = new Text(L"↑↓  選擇", Pos(49, 766));
+		Text* help2 = new Text(L"Enter確認", Pos(49, 786));
 		help1->setTextSize(20U);
 		help2->setTextSize(20U);
 		m_renderManager->addGraphics(help1);
 		m_renderManager->addGraphics(help2);
 
 		for (int i = 0; i < 3; i++) {
-			auto tmp = new Text(texts[i], x, y += next_y);
+			auto tmp = new Text(texts[i], position.AddY(next_y));
 			tmp->setId(i);
 			tmp->setTextIndexPointer(&m_text_index);
 			m_clickable_texts.push_back(tmp);
@@ -133,28 +132,28 @@ namespace rg {
 		std::wstringstream ss;
 		ss << L" 你這次得到了 " << score << L" 分!";
 
-		int t_x = Global::settings.getIngameScreenWidth() / 2, t_y = Global::settings.getIngameScreenHeight() / 4;
+		Pos position = Pos(Global::settings.getIngameScreenWidth() / 2, Global::settings.getIngameScreenHeight() / 4);
 		unsigned int text_size;
-		text_size = static_cast<unsigned int>(90.f * t_x / 500);
+		text_size = static_cast<unsigned int>(90.f * position.x / 500);
 
-		Text* now_score_t = new Text(ss.str(), t_x, t_y);//x = 500(1000), y = 200(800)
+		Text* now_score_t = new Text(ss.str(), position);//x = 500(1000), y = 200(800)
 		now_score_t->setTextSize(text_size);//90(1000)
 		now_score_t->setTextColor(sf::Color(0, 255, 0));
 		m_renderManager->addGraphics(now_score_t);//color = lime
 
 		ss.str(L"");
 		ss << L"歷史最高 " << highest_score << L" 分";
-		Text* highest_score_t = new Text(ss.str(), t_x, t_y + text_size);
-		text_size = static_cast<unsigned int>(30.f * t_x / 500);
+		Text* highest_score_t = new Text(ss.str(), Pos(position.x, position.y + text_size));
+		text_size = static_cast<unsigned int>(30.f * position.x / 500);
 		highest_score_t->setTextSize(text_size);
 		highest_score_t->setTextColor(sf::Color(143, 188, 143));
 		m_renderManager->addGraphics(highest_score_t);//color = orange
 
 		sf::String texts[] = { L"再玩一次", L"回主選單", L"離開" };
-		t_y += text_size * 4;
-		text_size = static_cast<unsigned int>(60.f * t_x / 500);
+		position.y += text_size * 4;
+		text_size = static_cast<unsigned int>(60.f * position.x / 500);
 		for (int i = 0; i < 3; i++) {
-			auto tmp = new Text(texts[i], t_x, t_y += text_size*2);
+			auto tmp = new Text(texts[i], position.AddY(text_size * 2));
 			tmp->setTextSize(text_size);
 			tmp->setId(i);
 			tmp->setTextIndexPointer(&m_text_index);
@@ -196,12 +195,11 @@ namespace rg {
 			{L"關", L"慢", L"快"}
 		};
 		int default_index[] = { Global::settings.getColorMode(), Global::settings.getColorF_index()};
-		//int x = 150, y = 200, next_y = 120;
-		Pos p = { 150, 200 };
+		Pos position = Pos(150, 200);
 		int next_y = 120;
 
-		Text* help1 = new Text(L"↑↓  選擇", 49, 766);
-		Text* help2 = new Text(L"Enter確認", 49, 786);
+		Text* help1 = new Text(L"↑↓  選擇", Pos(49, 766));
+		Text* help2 = new Text(L"Enter確認", Pos(49, 786));
 		help1->setTextSize(20U);
 		help2->setTextSize(20U);
 		m_renderManager->addGraphics(help1);
@@ -209,23 +207,23 @@ namespace rg {
 
 		int id = 0;
 
-		SettingsText* saveSettings = new SettingsText({ L"儲存並返回" }, 300, 600, 0);
+		SettingsText* saveSettings = new SettingsText({ L"儲存並返回" }, Pos(300, 600), 0);
 		saveSettings->setTextIndexPointer(&m_text_index);
 		saveSettings->setId(id++);
 		s_clickable_texts.push_back(saveSettings);
 
-		SettingsText* n_saveSettings = new SettingsText({ L"不儲存返回" }, 300, 700, 0);
+		SettingsText* n_saveSettings = new SettingsText({ L"不儲存返回" }, Pos(300, 700), 0);
 		n_saveSettings->setTextIndexPointer(&m_text_index);
 		n_saveSettings->setId(id++);
 		s_clickable_texts.push_back(n_saveSettings);
 
 		for (int i = 0; i < 2; i++) {
-			auto settings_name = new Text(texts[i], p.x, p.y += next_y);
+			auto settings_name = new Text(texts[i], position.AddY(next_y));
 			settings_name->setTextSize(30U);
 			settings_name->setTextColor(sf::Color::Black);
 			m_renderManager->addGraphics(settings_name);
 
-			auto settings_choose = new SettingsText(subs[i], p.x + 200, p.y, default_index[i]);
+			auto settings_choose = new SettingsText(subs[i], Pos(position.x + 200, position.y), default_index[i]);
 			settings_choose->setId(id + i);
 			settings_choose->setTextIndexPointer(&m_text_index);
 			settings_choose->setTextSize(40U);
@@ -270,12 +268,12 @@ namespace rg {
 
 #pragma region objects
 
-	Text::Text(sf::String text, float x, float y) {
+	Text::Text(sf::String text, Pos position) {
 		this->m_id = -1;//default
 		this->m_font = Global::settings.getFont();
 		this->grap = sf::Text(text, m_font, 60U);//default
 		this->grap.setOrigin(grap.getLocalBounds().width / 2, grap.getLocalBounds().height / 2);
-		this->grap.setPosition(x, y);
+		this->grap.setPosition(position.x, position.y);
 		this->index = nullptr;
 	}
 
@@ -329,15 +327,15 @@ namespace rg {
 		window.draw(sprite);
 	}
 
-	SettingsText::SettingsText(std::vector<sf::String> texts, float x, float y, int default_index) : 
-		Text(texts[default_index], x, y),
+	SettingsText::SettingsText(std::vector<sf::String> texts, Pos position, int default_index) :
+		Text(texts[default_index], position),
 		tri_left(sf::Triangles, 3), 
 		tri_right(sf::Triangles, 3) 
 	{
 
 		this->texts = texts;
-		this->x = x;
-		this->y = y;
+		this->x = position.x;
+		this->y = position.y;
 		index = default_index;
 		tri_visible_left = false;
 		tri_visible_right = false;
