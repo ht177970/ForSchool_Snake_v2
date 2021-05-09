@@ -10,6 +10,7 @@ namespace rg {
 	Core::Core(sf::Font g_font, sf::Texture g_pic) : m_renderManager(window) {
 		window.create(sf::VideoMode(MENU_WITDH, MENU_HEIGHT), "MainMenu", sf::Style::Close | sf::Style::Titlebar);
 		window.setFramerateLimit(60);
+		window.setKeyRepeatEnabled(false);
 		this->m_lastgame_score = 0;
 		this->m_highest_score = GameData::getHighestScore();
 		this->m_mainmenu = nullptr;
@@ -46,7 +47,6 @@ namespace rg {
 
 	void Core::display_MainMenu() {
 		if (Global::C_Rebuild()) {
-			//Global::C_afterRebuild();
 			if (this->m_mainmenu)
 				delete this->m_mainmenu;
 			m_mainmenu = new MainMenu(window, m_renderManager);
@@ -57,7 +57,6 @@ namespace rg {
 
 	void Core::display_Game() {
 		if (Global::C_Rebuild()) {
-			//Global::C_afterRebuild();
 			if (this->m_game)
 				delete this->m_game;
 			m_game = new Game(window, m_renderManager, BaseData(Global::settings.getOutGameSize(), Global::settings.getInGameWidth(),

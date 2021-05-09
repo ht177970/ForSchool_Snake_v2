@@ -17,10 +17,6 @@ namespace rg {
 		return Global::C_now_mode;
 	}
 
-	/*void Global::C_afterRebuild() {
-		Global::C_rebuild = false;
-	}*/
-
 	//return need rebuild
 	//if need, vaule will change to false
 	bool Global::C_Rebuild() {

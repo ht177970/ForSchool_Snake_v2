@@ -90,6 +90,7 @@ namespace rg {
 			case 3:
 				return sf::Color(generator() % 256, generator() % 256, generator() % 256);
 			}
+			return sf::Color::Black;
 		}
 	private:
 		int outgame_size = 100;//witdh = height
